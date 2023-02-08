@@ -8,6 +8,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { collection, getDocs, addDoc} from "firebase/firestore";
+import { db } from "../firebase-config";
+
 
 
 //Component to create exercise creation row
@@ -49,16 +52,19 @@ const AddExerciseRow = ( {handleSets, handleReps, handleWeight, handleName, idx,
 }
 
 function Home() {
+  //Logic for opening and closing modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //Array of exercises
+  //Initialize rray of exercises
   const [exercises, setExercises] = useState([  
     {}
   ])
 
+  const [workoutName, setWorkoutName] = useState()
 
+  //Style for modal box
   const style = {
     position: 'absolute',
     top: '50%',
@@ -70,6 +76,12 @@ function Home() {
     boxShadow: 24,
     p: 4,
   };
+
+  //Handle updates to all different fields in different locations
+
+  const handleWorkoutName = (event) => {
+    setWorkoutName( event.target.value)
+  }
 
   const handleSets = (event, idx) => {
     setExercises(prevExercises => {
@@ -83,9 +95,7 @@ function Home() {
     })
   };
 
-
   const handleReps = (event, idx) => {
-
     setExercises(prevExercises => {
       const newExercise = {
         ...prevExercises[idx],
@@ -97,9 +107,7 @@ function Home() {
     })
   };
 
-
   const handleName = (event, idx) => {
-
     setExercises(prevExercises => {
       const newExercise = {
         ...prevExercises[idx],
@@ -112,7 +120,6 @@ function Home() {
   }
 
   const handleWeight = (event, idx) => {
-
     setExercises(prevExercises => {
       const newExercise = {
         ...prevExercises[idx],
@@ -124,8 +131,26 @@ function Home() {
     })
   }
 
-  const handleTrackWorkout = () => {
+  const handleTrackWorkout = async () => {
     console.log(exercises)
+    const date = new Date();
+    const id = localStorage.getItem("userid");
+    console.log(date);
+    const workoutCollection = collection(db, "workouts")
+
+    console.log(id)
+    const newFields = {
+      name: workoutName,
+      exercises: exercises,
+      timestamp: date,
+      uid: id
+    }
+    //Create a new workout object in workouts array
+    //Give it a timestamp and a user id
+    await addDoc(workoutCollection, newFields)
+    setExercises([{}])
+    setWorkoutName("")
+    handleClose();
   }
 
   //Add new exercise to array
@@ -149,7 +174,7 @@ function Home() {
         <Box sx={style}>
           <Grid container spacing="2">
             <Grid item xs={12}>
-              <TextField id="outlined-basic" label="Workout" variant="outlined" />
+              <TextField id="outlined-basic" label="Workout" key={"workoutName"} value={workoutName} onChange={(e) => handleWorkoutName(e)} variant="outlined" />
             </Grid>
             {exercises.map((exercise, idx) => <AddExerciseRow key={idx} idx={idx} {...exercise} handleSets={handleSets} handleName={handleName} handleReps={handleReps} handleWeight={handleWeight}/>)}
             <Grid item xs={10}>

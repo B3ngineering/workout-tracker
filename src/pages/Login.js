@@ -15,10 +15,10 @@ function Login({setIsAuth}) {
     navigate("/")
     const name = result.user.displayName;
     const email = result.user.email;
-
-    //User information, add id
+    const uid = result.user.uid;
     localStorage.setItem("name", name)
     localStorage.setItem("email", email)
+    localStorage.setItem("userid", uid)
     
     }).catch((error) => {
     console.log(error);
