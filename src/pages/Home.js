@@ -1,4 +1,4 @@
-import React, { createElement } from 'react'
+import React, { useState } from 'react'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -8,26 +8,56 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { rootShouldForwardProp } from '@mui/material/styles/styled';
 
-//Break this into components and comment
+
+//Component to create exercise creation row
+const AddExerciseRow = ( {handleSets, handleReps, handleWeight, handleName, idx, name, sets, reps, weight }) => {
+  
+  return (
+    <>
+    <Grid item xs={4}>
+      <TextField id="outlined-basic" label="Exercise" variant="outlined" key={"name"} value={name} onChange={(e) => handleName(e, idx)}/>
+    </Grid>
+
+    <Grid item xs={1}>
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Sets</InputLabel>
+          <Select labelId="demo-simple-select-label" id="demo-simple-select" key={"sets"} value={sets} label="Sets" onChange={(e) => handleSets(e, idx)}>
+            {[...(new Array(7))].map((_, idx) => <MenuItem value={idx+1} key={idx+1}>{idx + 1}</MenuItem>)}
+          </Select>
+      </FormControl>
+    </Grid>
+
+    <Grid item xs={1}>
+      <p>X</p>
+    </Grid>
+
+    <Grid item xs={1}>
+      <FormControl>
+        <InputLabel id="demo-simple-select-label">Reps</InputLabel>
+          <Select labelId="demo-simple-select-label" id="demo-simple-select" key={"reps"} value={reps} label="Reps" onChange={(e) => handleReps(e, idx)}>
+            {[...(new Array(20))].map((_, idx) => <MenuItem value={idx+1} key={idx+1}>{idx + 1}</MenuItem>)}
+          </Select>
+      </FormControl>
+    </Grid>
+
+    <Grid item xs={4}>
+      <TextField id="outlined-basic" label="Weight" variant="outlined" key={"weight"} value={weight} onChange={(e) => handleWeight(e, idx)}/>
+    </Grid>
+    </>
+  )
+}
 
 function Home() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [sets, setSets] = React.useState('');
+  //Array of exercises
+  const [exercises, setExercises] = useState([  
+    {}
+  ])
 
-  const handleSets = (event) => {
-    setSets(event.target.value);
-  };
-
-  const [reps, setReps] = React.useState('');
-
-  const handleReps = (event) => {
-    setReps(event.target.value);
-  };
 
   const style = {
     position: 'absolute',
@@ -41,9 +71,70 @@ function Home() {
     p: 4,
   };
 
-  //Button onClick should spawn an identical unfilled row
-  //Add "Track" button
-  //Upon track being clicked, data should write to the db
+  const handleSets = (event, idx) => {
+    setExercises(prevExercises => {
+      const newExercise = {
+        ...prevExercises[idx],
+        sets: event.target.value,
+      }
+      const newArray = [...prevExercises]
+      newArray[idx] = newExercise;
+      return newArray;
+    })
+  };
+
+
+  const handleReps = (event, idx) => {
+
+    setExercises(prevExercises => {
+      const newExercise = {
+        ...prevExercises[idx],
+        reps: event.target.value,
+      }
+      const newArray = [...prevExercises]
+      newArray[idx] = newExercise;
+      return newArray;
+    })
+  };
+
+
+  const handleName = (event, idx) => {
+
+    setExercises(prevExercises => {
+      const newExercise = {
+        ...prevExercises[idx],
+        name: event.target.value,
+      }
+      const newArray = [...prevExercises]
+      newArray[idx] = newExercise;
+      return newArray;
+    })
+  }
+
+  const handleWeight = (event, idx) => {
+
+    setExercises(prevExercises => {
+      const newExercise = {
+        ...prevExercises[idx],
+        weight: event.target.value,
+      }
+      const newArray = [...prevExercises]
+      newArray[idx] = newExercise;
+      return newArray;
+    })
+  }
+
+  const handleTrackWorkout = () => {
+    console.log(exercises)
+  }
+
+  //Add new exercise to array
+  const handleAddExercise = () => {
+    //Appending an empty object onto the end
+    setExercises((previous) => {
+      return [...previous, {}]
+    })
+  }
   
   return (
     <div>
@@ -56,6 +147,18 @@ function Home() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <Grid container spacing="2">
+            <Grid item xs={12}>
+              <TextField id="outlined-basic" label="Workout" variant="outlined" />
+            </Grid>
+            {exercises.map((exercise, idx) => <AddExerciseRow key={idx} idx={idx} {...exercise} handleSets={handleSets} handleName={handleName} handleReps={handleReps} handleWeight={handleWeight}/>)}
+            <Grid item xs={10}>
+              <Button onClick={handleAddExercise}>Add Exercise</Button>
+            </Grid>
+            <Grid item xs={2}>
+              <Button onClick={handleTrackWorkout}>Track Workout</Button>
+            </Grid>
+          </Grid>
         </Box>
       </Modal>
     </div>
