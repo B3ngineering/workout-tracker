@@ -135,10 +135,8 @@ function Home() {
     console.log(exercises)
     const date = new Date();
     const id = localStorage.getItem("userid");
-    console.log(date);
     const workoutCollection = collection(db, "workouts")
 
-    console.log(id)
     const newFields = {
       name: workoutName,
       exercises: exercises,
@@ -160,10 +158,13 @@ function Home() {
       return [...previous, {}]
     })
   }
+
+  const username = localStorage.getItem("name");
+
   
   return (
     <div>
-      <h1>Welcome, user</h1>
+      <h1>Welcome, {username}</h1>
       <Button onClick={handleOpen}>Create New Workout</Button>
       <Modal
         open={open}
