@@ -133,7 +133,7 @@ function Home() {
 
   const handleTrackWorkout = async () => {
     console.log(exercises)
-    const date = new Date();
+    const date = Date();
     const id = localStorage.getItem("userid");
     const workoutCollection = collection(db, "workouts")
 
