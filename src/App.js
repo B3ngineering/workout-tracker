@@ -9,7 +9,7 @@ import Workouts from "./pages/Workouts"
 import Progress from "./pages/Progress"
 import { signOut } from 'firebase/auth';
 import {auth} from "./firebase-config";
-import Button from '@mui/material/Button';
+
 
 
 function App() {
@@ -19,11 +19,12 @@ function App() {
     signOut(auth).then(() => {
       localStorage.clear()
       setIsAuth(false)
-      window.location.pathname = "/";
+      window.location.pathname = "/login";
     })
   }
 
   return (
+
       <Router>
         <nav>
           <Link to="/"> Home </Link>
@@ -36,13 +37,15 @@ function App() {
           )}
         </nav>
         <Routes>
-          <Route path="/" element={<Home/>} />
+          <Route path="/" element={<Home isAuth={isAuth}/>} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth}/>} />
           <Route path="/workouts" element={<Workouts/>} />
           <Route path="/progress" element={<Progress/>} />
         </Routes>
+
       </Router>
   );
+
 
 }
 

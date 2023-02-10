@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -10,6 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { collection, getDocs, addDoc} from "firebase/firestore";
 import { db } from "../firebase-config";
+import { useNavigate } from 'react-router-dom';
+
 
 
 
@@ -19,13 +21,13 @@ const AddExerciseRow = ( {handleSets, handleReps, handleWeight, handleName, idx,
   return (
     <>
     <Grid item xs={4}>
-      <TextField id="outlined-basic" label="Exercise" variant="outlined" key={"name"} value={name} onChange={(e) => handleName(e, idx)}/>
+      <TextField required id="outlined-basic" label="Exercise" variant="outlined" key={"name"} value={name} onChange={(e) => handleName(e, idx)}/>
     </Grid>
 
     <Grid item xs={1}>
       <FormControl>
         <InputLabel id="demo-simple-select-label">Sets</InputLabel>
-          <Select labelId="demo-simple-select-label" id="demo-simple-select" key={"sets"} value={sets} label="Sets" onChange={(e) => handleSets(e, idx)}>
+          <Select required labelId="demo-simple-select-label" id="demo-simple-select" key={"sets"} value={sets} label="Sets" onChange={(e) => handleSets(e, idx)}>
             {[...(new Array(7))].map((_, idx) => <MenuItem value={idx+1} key={idx+1}>{idx + 1}</MenuItem>)}
           </Select>
       </FormControl>
@@ -38,20 +40,26 @@ const AddExerciseRow = ( {handleSets, handleReps, handleWeight, handleName, idx,
     <Grid item xs={1}>
       <FormControl>
         <InputLabel id="demo-simple-select-label">Reps</InputLabel>
-          <Select labelId="demo-simple-select-label" id="demo-simple-select" key={"reps"} value={reps} label="Reps" onChange={(e) => handleReps(e, idx)}>
+          <Select required labelId="demo-simple-select-label" id="demo-simple-select" key={"reps"} value={reps} label="Reps" onChange={(e) => handleReps(e, idx)}>
             {[...(new Array(20))].map((_, idx) => <MenuItem value={idx+1} key={idx+1}>{idx + 1}</MenuItem>)}
           </Select>
       </FormControl>
     </Grid>
 
     <Grid item xs={4}>
-      <TextField id="outlined-basic" label="Weight" variant="outlined" key={"weight"} value={weight} onChange={(e) => handleWeight(e, idx)}/>
+      <TextField required id="outlined-basic" label="Weight" variant="outlined" key={"weight"} value={weight} onChange={(e) => handleWeight(e, idx)}/>
     </Grid>
     </>
   )
 }
 
-function Home() {
+function Home({ isAuth }) {
+  let navigate = useNavigate();
+  useEffect(() => {
+  if(isAuth === false){
+    navigate('/login')
+  }
+}, [])
   //Logic for opening and closing modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -164,8 +172,10 @@ function Home() {
   
   return (
     <div>
-      <h1>Welcome, {username}</h1>
-      <Button onClick={handleOpen}>Create New Workout</Button>
+      <h1>Welcome {username}</h1>
+      <div className="createWorkout">
+        <Button size="large" variant="contained" onClick={handleOpen}>Create New Workout</Button>
+      </div>
       <Modal
         open={open}
         onClose={handleClose}
@@ -175,14 +185,20 @@ function Home() {
         <Box sx={style}>
           <Grid container spacing="2">
             <Grid item xs={12}>
-              <TextField id="outlined-basic" label="Workout" key={"workoutName"} value={workoutName} onChange={(e) => handleWorkoutName(e)} variant="outlined" />
+              <div className="workout-name">
+                <TextField required id="outlined-basic" label="Workout" key={"workoutName"} value={workoutName} onChange={(e) => handleWorkoutName(e)} variant="standard" />
+              </div>
             </Grid>
             {exercises.map((exercise, idx) => <AddExerciseRow key={idx} idx={idx} {...exercise} handleSets={handleSets} handleName={handleName} handleReps={handleReps} handleWeight={handleWeight}/>)}
-            <Grid item xs={10}>
-              <Button onClick={handleAddExercise}>Add Exercise</Button>
+            <Grid item xs={9}>
+              <div className="modal-Button">
+                <Button variant="contained" onClick={handleAddExercise}>Add Exercise</Button>
+              </div>
             </Grid>
-            <Grid item xs={2}>
-              <Button onClick={handleTrackWorkout}>Track Workout</Button>
+            <Grid item xs={3}>
+              <div className="modal-Button">
+                <Button variant="contained" onClick={handleTrackWorkout}>Track Workout</Button>
+              </div>
             </Grid>
           </Grid>
         </Box>

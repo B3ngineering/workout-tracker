@@ -45,12 +45,11 @@ function workouts() {
   useEffect(() => {
     const getWorkouts = async () => {
       const data = await getDocs(workoutsCollectionRef);
-      console.log(data)
       setWorkouts(data.docs.map((doc) => ({...doc.data(), id: doc.id})))
     }
   
     getWorkouts();
-  })
+  }, [])
 
 
 
