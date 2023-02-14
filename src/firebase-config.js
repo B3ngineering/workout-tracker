@@ -4,7 +4,7 @@ import {getAuth, GoogleAuthProvider} from 'firebase/auth';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDic15piw7C6-CR1cK5Q7AbwNggN8-XlQA",
-    authDomain: "https://workout-tracker-project-blush.vercel.app",
+    authDomain: "workout-tracker-abb9a.firebaseapp.com",
     projectId: "workout-tracker-abb9a",
     storageBucket: "workout-tracker-abb9a.appspot.com",
     messagingSenderId: "74719337073",
