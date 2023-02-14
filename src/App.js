@@ -35,7 +35,7 @@ function App() {
           {!isAuth ? (
             <Link to="/login"> Login </Link>
           ) : (
-            <Link onClick={signUserOut} to="/login"> Log Out </Link>
+            <Link onClick={signUserOut} to="/"> Log Out </Link>
           )}
         </nav>
         <Routes>
