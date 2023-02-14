@@ -54,18 +54,20 @@ const AddExerciseRow = ( {handleSets, handleReps, handleWeight, handleName, idx,
 }
 
 function Home({ isAuth }) {
+  //Code to make sure that the user cannot access the page if not logged in
   let navigate = useNavigate();
   useEffect(() => {
   if(isAuth === false){
     navigate('/login')
   }
 }, [])
+
   //Logic for opening and closing modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  //Initialize rray of exercises
+  //Initialize array of exercises
   const [exercises, setExercises] = useState([  
     {}
   ])
@@ -139,6 +141,7 @@ function Home({ isAuth }) {
     })
   }
 
+  //Add the workout to firebase
   const handleTrackWorkout = async () => {
     console.log(exercises)
     const date = Date();
@@ -151,8 +154,7 @@ function Home({ isAuth }) {
       timestamp: date,
       uid: id
     }
-    //Create a new workout object in workouts array
-    //Give it a timestamp and a user id
+   
     await addDoc(workoutCollection, newFields)
     setExercises([{}])
     setWorkoutName("")

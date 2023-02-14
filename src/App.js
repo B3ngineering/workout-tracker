@@ -13,8 +13,10 @@ import {auth} from "./firebase-config";
 
 
 function App() {
+
   const [isAuth, setIsAuth] = useState(false);
 
+  //Handle user sign in and out
   const signUserOut = () => {
     signOut(auth).then(() => {
       localStorage.clear()
@@ -39,8 +41,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home isAuth={isAuth}/>} />
           <Route path="/login" element={<Login setIsAuth={setIsAuth}/>} />
-          <Route path="/workouts" element={<Workouts/>} />
-          <Route path="/progress" element={<Progress/>} />
+          <Route path="/workouts" element={<Workouts isAuth={isAuth}/>} />
+          <Route path="/progress" element={<Progress isAuth={isAuth}/>} />
         </Routes>
 
       </Router>
